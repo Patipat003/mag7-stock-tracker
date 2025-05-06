@@ -27,7 +27,13 @@ const PORT = process.env.PORT || 5000;
 ConnectDB();
 
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://mag7-stock-tracker-dgqz.vercel.app'
+  ],
+  credentials: true
+}));
 app.use(bodyParser.json({ limit: '10mb' }));
 
 readdirSync('./src/Routes').map((r) =>
