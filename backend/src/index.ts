@@ -21,6 +21,7 @@ const io = new Server(server, {
   }
 });
 
+const HOST = process.env.HOST || '127.0.0.1';
 const PORT = process.env.PORT || 5000;
 
 ConnectDB();
@@ -98,7 +99,7 @@ io.on('connection', (socket: any) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(Number(PORT), HOST, () => {
   console.log(`Server is running on port ${PORT}`);
   updateStocksFromAPI();
   setInterval(updateStocksFromAPI, 60 * 1000); // อัปเดตทุก 1 นาที
