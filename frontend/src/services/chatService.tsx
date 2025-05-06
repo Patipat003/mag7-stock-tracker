@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 
 let socket: any = null;
+const apiUrl = import.meta.env.API_URL;
 
 export const connectChat = (
   token: string | null,
@@ -19,7 +20,7 @@ export const connectChat = (
     socket.disconnect();
   }
 
-  socket = io('http://localhost:5000');
+  socket = io(`${apiUrl}`);
 
   socket.emit('authenticate', token);
 

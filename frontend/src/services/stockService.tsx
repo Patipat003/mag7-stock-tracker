@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const apiUrl = import.meta.env.API_URL;
+
 export interface NewsItem {
     title: string;
     link: string;
@@ -9,7 +11,7 @@ export interface NewsItem {
 
 export const getStocks = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/stocks');
+    const response = await axios.get(`${apiUrl}/stocks`);
     return response.data;
   } catch (error) {
     console.error('Error fetching stocks:', error);
@@ -19,7 +21,7 @@ export const getStocks = async () => {
 
 export const getNews = async (symbol: string): Promise<NewsItem[]> => {
     try {
-      const response = await axios.get<NewsItem[]>(`http://localhost:5000/news/${symbol}`);
+      const response = await axios.get<NewsItem[]>(`${apiUrl}/news/${symbol}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching news:", error);
@@ -29,7 +31,7 @@ export const getNews = async (symbol: string): Promise<NewsItem[]> => {
 
 export const getStockBySymbol = async (symbol: string) => {
   try {
-    const response = await axios.get(`http://localhost:5000/stocks/${symbol}`);
+    const response = await axios.get(`${apiUrl}/stocks/${symbol}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching stock by symbol:', error);
@@ -38,7 +40,7 @@ export const getStockBySymbol = async (symbol: string) => {
 };
 
 export const fetchStockHistory = async (symbol: string, period: string) => {
-    const res = await fetch(`http://localhost:5000/stocks/history/${symbol}/${period}`);
+    const res = await fetch(`${apiUrl}/stocks/history/${symbol}/${period}`);
     const json = await res.json();
     return json.quotes;
   };

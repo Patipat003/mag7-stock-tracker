@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const apiUrl = import.meta.env.API_URL;
+
 export const registerUser = async (username: string, password: string) => {
   try {
-    const response = await axios.post("http://localhost:5000/register", {
+    const response = await axios.post(`${apiUrl}/register`, {
       username,
       password,
     });
@@ -18,7 +20,7 @@ interface LoginResponse {
 
 export const loginUser = async (username: string, password: string) => {
   try {
-    const response = await axios.post<LoginResponse>("http://localhost:5000/login", {
+    const response = await axios.post<LoginResponse>(`${apiUrl}/login`, {
       username,
       password,
     });
