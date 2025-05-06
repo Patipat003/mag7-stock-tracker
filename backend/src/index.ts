@@ -101,5 +101,5 @@ io.on('connection', (socket: any) => {
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   updateStocksFromAPI();
-  setInterval(updateStocksFromAPI, 10 * 1000); // อัปเดตซ้ำทุก 10 วินาที
+  setInterval(updateStocksFromAPI, 60 * 1000); // อัปเดตทุก 1 นาที
 });

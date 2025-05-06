@@ -40,24 +40,26 @@ export const updateStocksFromAPI = async () => {
                 trailingPE,          // P/E ratio
                 preMarketPrice       // ราคา pre-market
             } = quote as any;
-
-            await Stock.findOneAndUpdate(
-                { symbol },
-                {
-                    symbol,
-                    name: longName || symbol,
-                    price: regularMarketPrice,
-                    change: regularMarketChange,
-                    open: regularMarketOpen,
-                    high: regularMarketHigh,
-                    low: regularMarketLow,
-                    volume: regularMarketVolume,
-                    peRatio: trailingPE,
-                    preMarket: preMarketPrice,
-                    updatedAt: new Date(),
-                },
-                { upsert: true, new: true }
-            );
+            
+            if (regularMarketPrice !== regularMarketPrice) {
+              await Stock.findOneAndUpdate(
+                  { symbol },
+                  {
+                      symbol,
+                      name: longName || symbol,
+                      price: regularMarketPrice,
+                      change: regularMarketChange,
+                      open: regularMarketOpen,
+                      high: regularMarketHigh,
+                      low: regularMarketLow,
+                      volume: regularMarketVolume,
+                      peRatio: trailingPE,
+                      preMarket: preMarketPrice,
+                      updatedAt: new Date(),
+                  },
+                  { upsert: true, new: true }
+              );
+            }
         }
         console.log("Stocks updated successfully.");
     } catch (error) {
