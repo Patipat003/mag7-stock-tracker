@@ -18,7 +18,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:5173',
-      'https://mag7-stock-tracker-dgqz.vercel.app'
+      'https://mag7-stock-tracker-dgqz.vercel.app',
+      'https://www.mag7tracker.xyz'
     ],
     methods: ['GET', 'POST']
   }
