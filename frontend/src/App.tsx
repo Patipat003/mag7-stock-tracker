@@ -12,7 +12,7 @@ const App: React.FC = () => {
       <div data-theme="black">
         <Navbar />
         <div className="flex flex-1">
-          <div className="flex-1 overflow-auto p-4">
+          <div className="flex-1 h-screen overflow-auto p-4">
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/stock/:symbol" element={<StockPage />} />
