@@ -35,9 +35,14 @@ const StockChart: React.FC<StockChartProps> = ({ symbol, showFilter = true, heig
 
   useEffect(() => {
     fetchStockHistory(symbol, period).then((history) => {
-      setData(filterWeekends(history));
+      if (period === "1d") {
+        setData(history);
+      } else {
+        setData(filterWeekends(history));
+      }
     });
   }, [symbol, period]);
+
 
   const min = Math.min(...data.map((d) => d.close));
   const max = Math.max(...data.map((d) => d.close));
