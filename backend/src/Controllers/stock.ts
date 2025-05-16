@@ -41,7 +41,7 @@ export const updateStocksFromAPI = async () => {
                 preMarketPrice       // ราคา pre-market
             } = quote as any;
             
-            if (regularMarketPrice != null) {
+            if (regularMarketPrice !== regularMarketPrice) {
               await Stock.findOneAndUpdate(
                   { symbol },
                   {
