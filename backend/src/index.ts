@@ -34,7 +34,8 @@ app.use(morgan('dev'));
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://mag7-stock-tracker-dgqz.vercel.app'
+    'https://mag7-stock-tracker-dgqz.vercel.app',
+    'https://www.mag7tracker.xyz'
   ],
   credentials: true
 }));
