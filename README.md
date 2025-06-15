@@ -65,7 +65,7 @@ cd mag7-stock-tracker
 
 ## Usage
 
-1. Visit the live app: [Mag7 Stock Tracker](https://mag7-stock-tracker-dgqz.vercel.app/)
+1. Visit the live app: [Mag7 Stock Tracker](https://www.mag7tracker.xyz/)
 2. Log in using your credentials to access the chat and stock data features.
 3. Navigate to the stock pages to track and analyze your favorite magnificent stocks.
 
