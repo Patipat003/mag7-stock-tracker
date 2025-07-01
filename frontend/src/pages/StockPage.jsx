@@ -31,7 +31,7 @@ const StockPage = () => {
 
   return (
     <div className="flex flex-1 overflow-hidden p-4">
-      <div className="w-full space-y-4">
+      <div className="w-full space-y-4 m-4">
         <h2 className="text-2xl font-bold text-white">
           {stock.name} ({stock.symbol})
         </h2>

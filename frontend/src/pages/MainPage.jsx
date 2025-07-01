@@ -25,7 +25,6 @@ const MainPage = () => {
           <button
             className="group p-2 w-10 h-10 hidden sm:block rounded-lg border border-gray-600/30 hover:border-gray-500/50 transition-all duration-200 backdrop-blur-sm cursor-pointer"
             onClick={() => window.location.reload()}
-            title="Refresh"
           >
             <IoMdRefresh className="text-white text-xl group-hover:rotate-180 transition-transform duration-500 ease-in-out" />
           </button>
