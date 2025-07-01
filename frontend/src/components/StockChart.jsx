@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { fetchStockHistory } from "../services/stockService";
 import {
   LineChart,
   Line,
@@ -10,13 +8,61 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Box, Button, Typography, Chip } from "@mui/material";
+import { useEffect, useState } from "react";
+import { fetchStockHistory } from "../services/stockService";
 
-const StockChart = (props) => {
-  const [data, setData] = useState([]);
+const StockChart = ({ symbol, showFilter = true, height = 300 }) => {
+  const [data, setData] = useState({ quotes: [], meta: {} });
   const [period, setPeriod] = useState("1d");
+
+  useEffect(() => {
+    const fetchData = () => {
+      fetchStockHistory(symbol, period).then((history) => {
+        const filteredQuotes =
+          period === "1d"
+            ? history.quotes
+            : history.quotes.filter(
+                (q) => ![0, 6].includes(new Date(q.date).getDay())
+              );
+        setData({
+          quotes: filteredQuotes,
+          meta: history.meta,
+        });
+      });
+    };
+
+    fetchData();
+
+    const interval = setInterval(fetchData, 5000);
+
+    return () => clearInterval(interval);
+  }, [symbol, period]);
+
   const [marketSession, setMarketSession] = useState("");
 
-  const { symbol, showFilter = true, height = 300, display = "block" } = props;
+  const quotes = data?.quotes ?? [];
+  const meta = data?.meta ?? {};
+
+  const min = quotes.length > 0 ? Math.min(...quotes.map((d) => d.close)) : 0;
+  const max = quotes.length > 0 ? Math.max(...quotes.map((d) => d.close)) : 0;
+  const padding = (max - min) * 0.05;
+
+  const regularMarketPrice = meta.regularMarketPrice || 0;
+  const previousPrice = quotes[0]?.close || 0;
+  const priceChange = regularMarketPrice - previousPrice;
+  let previousClose = meta.previousClose;
+  if (!previousClose || previousClose === 0) {
+    previousClose = quotes[0]?.close || 0;
+  }
+
+  const percentChange =
+    previousClose !== 0
+      ? ((regularMarketPrice - previousClose) / previousClose) * 100
+      : 0;
+
+  const isPositive = percentChange >= 0;
+  const lineColor = isPositive ? "#34C759" : "#FF3B30";
+  const changeColor = isPositive ? "#34C759" : "#FF3B30";
 
   const periods = [
     { key: "1d", label: "1D" },
@@ -28,30 +74,28 @@ const StockChart = (props) => {
     { key: "5y", label: "5Y" },
   ];
 
-  const filterWeekends = (data) =>
-    data.filter((q) => ![0, 6].includes(new Date(q.date).getDay()));
-
   useEffect(() => {
-    fetchStockHistory(symbol, period).then((history) => {
-      if (period === "1d") {
-        setData(history);
-      } else {
-        setData(filterWeekends(history));
+    const updateMarketSession = () => {
+      const now = new Date();
+      const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+
+      const preMarketStart = 8 * 60;
+      const marketOpen = 13 * 60 + 30;
+      const marketClose = 20 * 60;
+
+      let session = "After-hours";
+      if (utcMinutes >= preMarketStart && utcMinutes < marketOpen) {
+        session = "Pre-market";
+      } else if (utcMinutes >= marketOpen && utcMinutes < marketClose) {
+        session = "";
       }
-    });
-  }, [symbol, period]);
+      setMarketSession(session);
+    };
 
-  const min = Math.min(...data.map((d) => d.close));
-  const max = Math.max(...data.map((d) => d.close));
-  const padding = (max - min) * 0.05;
-  const regularMarketPrice = data[data.length - 1]?.close || 0;
-  const previousPrice = data[0]?.close || 0;
-  const priceChange = regularMarketPrice - previousPrice;
-  const percentChange = (priceChange / previousPrice) * 100;
-
-  const isPositive = priceChange >= 0;
-  const lineColor = isPositive ? "#34C759" : "#FF3B30"; // iOS green/red
-  const changeColor = isPositive ? "#34C759" : "#FF3B30";
+    updateMarketSession();
+    const interval = setInterval(updateMarketSession, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   let lastHour = -1;
   let lastDay = -1;
@@ -115,42 +159,6 @@ const StockChart = (props) => {
     }
   };
 
-  const getMarketSessionColor = () => {
-    switch (marketSession) {
-      case "Open":
-        return "#34C759";
-      case "Pre-market":
-        return "#FF9500";
-      case "After-hours":
-        return "#8E8E93";
-      default:
-        return "#8E8E93";
-    }
-  };
-
-  useEffect(() => {
-    const updateMarketSession = () => {
-      const now = new Date();
-      const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
-
-      const preMarketStart = 8 * 60;
-      const marketOpen = 13 * 60 + 30;
-      const marketClose = 20 * 60;
-
-      let session = "After-hours";
-      if (utcMinutes >= preMarketStart && utcMinutes < marketOpen) {
-        session = "Pre-market";
-      } else if (utcMinutes >= marketOpen && utcMinutes < marketClose) {
-        session = "Open";
-      }
-      setMarketSession(session);
-    };
-
-    updateMarketSession();
-    const interval = setInterval(updateMarketSession, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <Box
       sx={{
@@ -160,7 +168,6 @@ const StockChart = (props) => {
         minHeight: height + 100,
       }}
     >
-      {/* Header Section */}
       <Box sx={{ p: 3, pb: 2 }}>
         <Typography
           variant="h4"
@@ -173,51 +180,34 @@ const StockChart = (props) => {
         >
           {symbol}
         </Typography>
-
         <Box sx={{ mb: 2 }}>
           <Typography
             variant="h3"
-            sx={{
-              fontWeight: 300,
-              fontSize: "20px",
-              mb: 0.5,
-              color: "white",
-            }}
+            sx={{ fontWeight: 500, fontSize: "20px", mb: 0.5, color: "white" }}
           >
             ${regularMarketPrice.toFixed(2)}
           </Typography>
-
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography
-              sx={{
-                color: changeColor,
-                fontWeight: 500,
-                fontSize: "1rem",
-              }}
+              sx={{ color: changeColor, fontWeight: 500, fontSize: "1rem" }}
             >
               {isPositive ? "+" : ""}
               {priceChange.toFixed(2)} ({isPositive ? "+" : ""}
               {percentChange.toFixed(2)}%)
             </Typography>
-
             <Chip
               label={marketSession}
               size="small"
               sx={{
-                bgcolor: getMarketSessionColor(),
-                color: "white",
-                fontSize: "0.75rem",
+                color: "#6A6A6AFF",
+                fontSize: "1rem",
                 height: "20px",
                 fontWeight: 500,
-                "& .MuiChip-label": {
-                  px: 1,
-                },
+                "& .MuiChip-label": { px: 1 },
               }}
             />
           </Box>
         </Box>
-
-        {/* Period Filter */}
         {showFilter && (
           <Box
             sx={{
@@ -255,12 +245,10 @@ const StockChart = (props) => {
           </Box>
         )}
       </Box>
-
-      {/* Chart Section */}
       <Box sx={{ px: 2, pb: 2 }}>
         <ResponsiveContainer width="100%" height={height}>
           <LineChart
-            data={data}
+            data={quotes}
             margin={{ top: 5, right: 5, left: 5, bottom: 10 }}
           >
             <CartesianGrid
@@ -282,12 +270,7 @@ const StockChart = (props) => {
                 if (period === "5y") return formatDate(value, "year");
                 return value;
               }}
-              tick={{
-                fontSize: 12,
-                fill: "#8E8E93",
-                fontWeight: 400,
-                dy: 20,
-              }}
+              tick={{ fontSize: 12, fill: "#8E8E93", fontWeight: 400, dy: 20 }}
               interval="preserveStartEnd"
             />
             <YAxis
@@ -295,11 +278,7 @@ const StockChart = (props) => {
               axisLine={false}
               tickLine={false}
               tickFormatter={(value) => `$${Math.round(value)}`}
-              tick={{
-                fontSize: 12,
-                fill: "#8E8E93",
-                fontWeight: 400,
-              }}
+              tick={{ fontSize: 12, fill: "#8E8E93", fontWeight: 400 }}
               width={40}
             />
             <Tooltip

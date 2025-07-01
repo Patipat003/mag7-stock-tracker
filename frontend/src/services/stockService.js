@@ -35,5 +35,5 @@ export const getStockBySymbol = async (symbol) => {
 export const fetchStockHistory = async (symbol, period) => {
   const res = await fetch(`${apiUrl}/stocks/history/${symbol}/${period}`);
   const json = await res.json();
-  return json.quotes;
+  return json;
 };

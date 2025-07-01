@@ -32,10 +32,11 @@ const MainPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {stocks.map((stock) => (
-            <div className="cursor-pointer">
-              <Link key={stock.symbol} to={`/stock/${stock.symbol}`}>
+            <div key={stock.symbol} className="cursor-pointer">
+              <Link to={`/stock/${stock.symbol}`}>
                 <StockChart
                   symbol={stock.symbol}
+                  dataFromParent={stock}
                   showFilter={false}
                   height={100}
                   display={"none"}

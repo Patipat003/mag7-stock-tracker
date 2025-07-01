@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { getStockBySymbol } from "../services/stockService";
 import Loading from "./ui/Loading";
+import { useStock } from "../contexts/StockContext";
 
 const StockInfo = ({ symbol }) => {
   const [stock, setStock] = useState(null);
+
+  const { data, setSymbol } = useStock();
+
+  useEffect(() => {
+    setSymbol(symbol);
+  });
 
   const fetchStockData = async () => {
     try {
@@ -22,7 +29,12 @@ const StockInfo = ({ symbol }) => {
 
   if (!stock) return <Loading />;
 
-  const isPositive = stock.change >= 0;
+  const regularMarketPrice = data.meta.regularMarketPrice || 0;
+  const previousClose = data.meta.previousClose || 0;
+  const percentChange =
+    ((regularMarketPrice - previousClose) / previousClose) * 100;
+
+  const isPositive = percentChange >= 0;
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -43,11 +55,11 @@ const StockInfo = ({ symbol }) => {
 
       <div className="mb-4 flex items-center justify-start space-x-4 font-semibold">
         <div className="text-xl text-white font-bold">
-          USD<span>${stock.price?.toFixed(2)}</span>
+          USD<span>${regularMarketPrice.toFixed(2)}</span>
         </div>
         <div className={isPositive ? "text-green-600" : "text-red-600"}>
           {isPositive ? "+" : ""}
-          {stock.change?.toFixed(2)}%
+          {percentChange.toFixed(2)}%
         </div>
       </div>
 
