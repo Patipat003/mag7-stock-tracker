@@ -16,14 +16,14 @@ const formatDate = (date) => {
 const NewsCard = ({ news }) => {
   return (
     <div className="rounded-lg shadow-md">
-      <p className="text-sm text-gray-500 mb-2">
+      <p className="text-xs md:text-sm text-gray-500 mb-2">
         {news.publisher}, {formatDate(news.providerPublishTime)}
       </p>
       <a
         href={news.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-lg text-white"
+        className="text-sm md:text-lg text-white"
       >
         {news.title}
       </a>
