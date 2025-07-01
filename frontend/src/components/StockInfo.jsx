@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getStockBySymbol } from "../services/stockService";
+import Loading from "./ui/Loading";
 
 const StockInfo = ({ symbol }) => {
   const [stock, setStock] = useState(null);
@@ -19,7 +20,7 @@ const StockInfo = ({ symbol }) => {
     return () => clearInterval(intervalId);
   }, [symbol]);
 
-  if (!stock) return <p className="text-center text-gray-500">Loading...</p>;
+  if (!stock) return <Loading />;
 
   const isPositive = stock.change >= 0;
 

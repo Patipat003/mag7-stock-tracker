@@ -2,8 +2,11 @@ import { Stock } from "../Models/Stock.js";
 import yahooFinance from "yahoo-finance2";
 
 const symbols = ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA"];
-
 yahooFinance.suppressNotices(["yahooSurvey"]);
+
+const isAnomalousQuote = (q) => {
+  return q.volume === 0; // if volume 0 ไม่เก็บข้อมูล
+};
 
 export const getStocks = async (req, res) => {
   try {
@@ -35,12 +38,12 @@ export const updateStocksFromAPI = async () => {
         regularMarketPrice,
         regularMarketChange,
         longName,
-        regularMarketOpen, // ราคาเปิด
-        regularMarketDayHigh, // ราคาสูงสุด
-        regularMarketDayLow, // ราคาต่ำสุด
-        regularMarketVolume, // ปริมาณการซื้อขาย
-        trailingPE, // P/E ratio
-        preMarketPrice, // ราคา pre-market
+        regularMarketOpen,
+        regularMarketDayHigh,
+        regularMarketDayLow,
+        regularMarketVolume,
+        trailingPE,
+        preMarketPrice,
       } = quote;
 
       if (regularMarketPrice !== undefined && regularMarketPrice !== null) {
@@ -89,7 +92,7 @@ export const getStockHistory = async (req, res) => {
         break;
       case "1m":
         startDate.setMonth(now.getMonth() - 1);
-        interval = "1h";
+        interval = "1d";
         break;
       case "3m":
       case "6m":
@@ -123,22 +126,13 @@ export const getStockHistory = async (req, res) => {
 
     let history = await fetchHistory(startDate);
 
-    if (period === "1d" && !history?.quotes?.length) {
-      console.log("No data found for today. Trying previous day...");
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      yesterday.setHours(0, 0, 0, 0);
-      const endYesterday = new Date(yesterday);
-      endYesterday.setHours(23, 59, 59, 999);
+    const filteredQuotes =
+      history?.quotes?.filter((q) => !isAnomalousQuote(q)) || [];
 
-      history = await yahooFinance.chart(symbol, {
-        period1: yesterday.toISOString(),
-        period2: endYesterday.toISOString(),
-        interval: "5m",
-      });
-    }
-
-    res.json(history);
+    res.json({
+      ...history,
+      quotes: filteredQuotes,
+    });
   } catch (error) {
     console.error("Error fetching stock history:", error);
     res.status(500).json({

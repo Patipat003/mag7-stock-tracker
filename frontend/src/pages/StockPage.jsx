@@ -4,6 +4,7 @@ import StockChart from "../components/StockChart";
 import StockInfo from "../components/StockInfo";
 import NewsCard from "../components/NewsCard";
 import { getStockBySymbol, getNews } from "../services/stockService";
+import Loading from "../components/ui/Loading";
 
 const StockPage = () => {
   const { symbol } = useParams();
@@ -26,12 +27,12 @@ const StockPage = () => {
     fetchData();
   }, [symbol]);
 
-  if (!stock) return <div>Loading...</div>;
+  if (!stock) return <Loading />;
 
   return (
     <div className="flex flex-1 overflow-hidden p-4">
       <div className="w-full space-y-4">
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-2xl font-bold text-white">
           {stock.name} ({stock.symbol})
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -44,7 +45,7 @@ const StockPage = () => {
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-2xl font-semibold">News</h3>
+          <h3 className="text-2xl font-semibold text-white">News</h3>
           {news.length > 0 ? (
             news.map((newsItem, index) => (
               <div key={index}>
