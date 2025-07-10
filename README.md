@@ -7,16 +7,12 @@ Mag7 Stock Tracker is a web application designed to track stock prices and marke
 
 - **Real-time Stock Data**: Get up-to-date stock information with price changes, trading volume, and market performance.
 - **Stock Detail Pages**: View individual stock details with historical data, performance graphs, and news updates.
-- **Global Chat and Room each Stock**: Engage with other users through a chat feature, discussing stock trends and sharing insights.
-- **User Authentication**: Secure login using JWT tokens to manage user sessions and join chatrooms.
 
 ## Tech Stack
 
 - **Frontend**: React, Tailwind CSS
-- **Backend**: Node.js, Express, Socket.IO
+- **Backend**: Node.js, Express
 - **Database**: MongoDB
-- **Authentication**: JWT (JSON Web Tokens)
-- **Real-time Communication**: Socket.IO
 - **Deployment**: Vercel for frontend hosting
 
 ## Installation
