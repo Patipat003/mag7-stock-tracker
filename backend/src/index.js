@@ -49,5 +49,5 @@ app.get("/", (req, res) => {
 server.listen(Number(PORT), HOST, () => {
   console.log(`Server is running on port ${PORT}`);
   updateStocksFromAPI();
-  setInterval(updateStocksFromAPI, 60 * 1000); // อัปเดตทุก 1 นาที
+  setInterval(updateStocksFromAPI, 10 * 60 * 1000); // ทุก 10 นาที
 });
