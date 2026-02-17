@@ -21,21 +21,17 @@ const MainPage = () => {
 
   return (
     <div className="flex flex-1 overflow-hidden p-4 px-10 relative">
-      {/* Background gradient blur effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
       <div className="w-full space-y-4 relative z-10">
-        {/* Header with glass morphism */}
         <div className="flex justify-center sm:justify-between items-center">
           <div className="relative">
             <h2 className="text-2xl font-bold text-white mb-6 drop-shadow-lg">
               Magnificent 7 Stocks Overview
             </h2>
-            {/* Subtle underline glow */}
-            <div className="absolute bottom-5 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           </div>
 
           <button
@@ -46,7 +42,6 @@ const MainPage = () => {
                        shadow-lg hover:shadow-xl hover:shadow-blue-500/20"
             onClick={() => window.location.reload()}
           >
-            {/* Glass reflection overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
 
             <IoMdRefresh
@@ -55,7 +50,6 @@ const MainPage = () => {
                                    duration-500 ease-in-out drop-shadow-lg"
             />
 
-            {/* Hover glow effect */}
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100 
                           bg-gradient-to-br from-blue-400/20 to-purple-400/20 
@@ -64,7 +58,6 @@ const MainPage = () => {
           </button>
         </div>
 
-        {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isLoading || stocks.length === 0
             ? Array.from({ length: 7 }).map((_, index) => (
@@ -91,7 +84,6 @@ const MainPage = () => {
                                   shadow-lg hover:shadow-xl hover:shadow-blue-500/20
                                   hover:scale-[1.02] hover:-translate-y-1"
                     >
-                      {/* Top highlight */}
                       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
                       <StockChart
@@ -102,7 +94,6 @@ const MainPage = () => {
                         display={"none"}
                       />
 
-                      {/* Hover glow effect */}
                       <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 
                                     bg-gradient-to-br from-blue-400/10 to-purple-400/10 
