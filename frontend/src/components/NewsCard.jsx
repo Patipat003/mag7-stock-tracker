@@ -27,7 +27,6 @@ const NewsCard = ({ news }) => {
       >
         {news.title}
       </a>
-      <hr className="text-gray-800 mt-2" />
     </div>
   );
 };

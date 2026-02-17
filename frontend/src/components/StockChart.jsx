@@ -22,7 +22,7 @@ const StockChart = ({ symbol, showFilter = true, height = 300 }) => {
           period === "1d"
             ? history.quotes
             : history.quotes.filter(
-                (q) => ![0, 6].includes(new Date(q.date).getDay())
+                (q) => ![0, 6].includes(new Date(q.date).getDay()),
               );
         setData({
           quotes: filteredQuotes,
@@ -100,6 +100,7 @@ const StockChart = ({ symbol, showFilter = true, height = 300 }) => {
   let lastHour = -1;
   let lastDay = -1;
   let lastMonth = "";
+  let lastYear = -1;
 
   const formatDate = (date, format = "day") => {
     const d = new Date(date);
@@ -145,7 +146,11 @@ const StockChart = ({ symbol, showFilter = true, height = 300 }) => {
         }
         return "";
       case "year":
-        return `${year}`;
+        if (lastYear !== year) {
+          lastYear = year;
+          return `${year}`;
+        }
+        return "";
       case "dayYearMonthTime":
         return `${String(day).padStart(2, "0")} ${
           months[monthIndex]
@@ -154,7 +159,7 @@ const StockChart = ({ symbol, showFilter = true, height = 300 }) => {
         return `${String(day).padStart(2, "0")} ${months[monthIndex]} ${year}`;
       default:
         return `${String(day).padStart(2, "0")}/${String(
-          monthIndex + 1
+          monthIndex + 1,
         ).padStart(2, "0")}/${year}`;
     }
   };
@@ -298,10 +303,8 @@ const StockChart = ({ symbol, showFilter = true, height = 300 }) => {
               labelFormatter={(value) => {
                 if (["1d", "1w", "1m"].includes(period))
                   return formatDate(value, "dayYearMonthTime");
-                if (["3m", "6m", "1y"].includes(period))
+                if (["3m", "6m", "1y", "5y"].includes(period))
                   return formatDate(value, "dayYearMonth");
-                if (period === "5y") return formatDate(value, "year");
-                return value;
               }}
               formatter={(value) => [
                 <span

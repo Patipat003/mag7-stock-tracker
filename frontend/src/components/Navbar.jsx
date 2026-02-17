@@ -14,7 +14,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="p-4 text-white sticky top-0 z-50 backdrop-blur bg-base-100/60 shadow-lg overflow-hidden">
+    <nav className="p-4 text-white sticky top-0 z-50 bg-white/2 backdrop-blur-xs border border-white/10 transition-all duration-300 ease-out shadow-lg">
       <div className="flex justify-between items-center">
         <div>
           <Link to="/" className="font-bold text-2xl">
