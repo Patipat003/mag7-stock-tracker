@@ -1,8 +1,10 @@
 import { Stock } from "../Models/Stock.js";
-import yahooFinance from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
 
 const symbols = ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA"];
-yahooFinance.suppressNotices(["yahooSurvey"]);
+const yahooFinance = new YahooFinance({
+  suppressNotices: ["yahooSurvey"],
+});
 
 const isAnomalousQuote = (q) => {
   return q.volume === 0; // if volume 0 ไม่เก็บข้อมูล
@@ -62,7 +64,7 @@ export const updateStocksFromAPI = async () => {
             preMarket: preMarketPrice,
             updatedAt: new Date(),
           },
-          { upsert: true, new: true }
+          { upsert: true, new: true },
         );
       }
     }
